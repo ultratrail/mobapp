@@ -100,8 +100,9 @@ public class MainActivity extends AppCompatActivity {
                         lastCommand=data;
                         usbService.write(data.getBytes());
                         commandInput.setText("");
-                       /* ScrollView mScrollView = (ScrollView) findViewById(R.id.scroll_view);
-                        mScrollView.smoothScrollTo(0, display.getBottom());*/
+
+                        //TODO scroll down the view
+
                     }
                 }
             }
