@@ -11,9 +11,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private Button shortcutButton3;
     private Button shortcutButton4;
 
+    private String lastCommand;
+
     private MyHandler mHandler;
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
@@ -74,12 +79,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        lastCommand="";
+
         mHandler = new MyHandler(this);
 
         display = (TextView) findViewById(R.id.commandView);
 
         commandInput = (EditText) findViewById(R.id.commandInput);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
+
+
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,11 +97,50 @@ public class MainActivity extends AppCompatActivity {
                     String data = commandInput.getText().toString() + "\r\n";
                     if (usbService != null) { // if UsbService was correctly binded, Send data
                         display.append(data);
+                        lastCommand=data;
                         usbService.write(data.getBytes());
+                        commandInput.setText("");
+                       /* ScrollView mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+                        mScrollView.smoothScrollTo(0, display.getBottom());*/
                     }
                 }
             }
         });
+
+        display.setMovementMethod(new ScrollingMovementMethod());
+
+        shortcutButton1 = (Button) findViewById(R.id.shortCutButton1);
+        shortcutButton1.setOnClickListener(new View.OnClickListener()  {
+            @Override
+            public void onClick(View v) {
+                commandInput.setText("sys get ver");
+            }
+        } );
+
+        shortcutButton2 = (Button) findViewById(R.id.shortCutButton2);
+        shortcutButton2.setOnClickListener(new View.OnClickListener()  {
+            @Override
+            public void onClick(View v) {
+                commandInput.setText("radio tx");
+            }
+        } );
+
+        shortcutButton3 = (Button) findViewById(R.id.shortCutButton3);
+        shortcutButton3.setOnClickListener(new View.OnClickListener()  {
+            @Override
+            public void onClick(View v) {
+                commandInput.setText("radio rx 0");
+            }
+        } );
+
+        shortcutButton4 = (Button) findViewById(R.id.shortCutButton4);
+        shortcutButton4.setOnClickListener(new View.OnClickListener()  {
+            @Override
+            public void onClick(View v) {
+                Log.d("LC", lastCommand);
+                commandInput.setText(lastCommand);
+            }
+        } );
 
 
     }
