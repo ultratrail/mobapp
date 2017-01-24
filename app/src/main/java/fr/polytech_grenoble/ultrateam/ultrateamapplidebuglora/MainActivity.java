@@ -49,7 +49,12 @@ public class MainActivity extends AppCompatActivity {
     };
     private UsbService usbService;
     private TextView display;
-    private EditText editText;
+    private EditText commandInput;
+    private Button shortcutButton1;
+    private Button shortcutButton2;
+    private Button shortcutButton3;
+    private Button shortcutButton4;
+
     private MyHandler mHandler;
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
@@ -71,14 +76,15 @@ public class MainActivity extends AppCompatActivity {
 
         mHandler = new MyHandler(this);
 
-        display = (TextView) findViewById(R.id.textView1);
-        editText = (EditText) findViewById(R.id.editText1);
+        display = (TextView) findViewById(R.id.commandView);
+
+        commandInput = (EditText) findViewById(R.id.commandInput);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editText.getText().toString().equals("")) {
-                    String data = editText.getText().toString() + "\r\n";
+                if (!commandInput.getText().toString().equals("")) {
+                    String data = commandInput.getText().toString() + "\r\n";
                     if (usbService != null) { // if UsbService was correctly binded, Send data
                         display.append(data);
                         usbService.write(data.getBytes());
@@ -86,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     @Override
