@@ -31,13 +31,13 @@
         <TextView
             android:id="@+id/commandView"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_centerHorizontal="true"
+            android:layout_height="match_parent"
             android:layout_marginTop="0dp"
             android:background="#FFFFFF"
-            android:maxLines="30000"
-            android:scrollbars="vertical"
-            android:minHeight="150dp" />
+            android:maxLines="7"
+            android:minHeight="120dp"
+            android:scrollIndicators="left"
+            android:scrollbars="vertical" />
 
     </ScrollView>
 
@@ -46,7 +46,7 @@
         style="?borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send"
+        android:text="@string/send"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@+id/commandInput"
@@ -62,13 +62,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/buttonSend"
-        android:layout_toStartOf="@+id/buttonSend">
+        android:layout_toStartOf="@+id/buttonSend"
+        android:inputType="">
 
         <requestFocus/>
     </EditText>
 
     <Button
-        android:text="S1"
+        android:text="GCI"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/shortCutButton1"
@@ -78,7 +79,7 @@
         android:layout_marginTop="5dp" />
 
     <Button
-        android:text="S2"
+        android:text="TX"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/shortCutButton1"
@@ -87,7 +88,7 @@
         android:id="@+id/shortCutButton2" />
 
     <Button
-        android:text="S3"
+        android:text="RX"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/shortCutButton3"
@@ -97,7 +98,7 @@
         android:layout_toEndOf="@+id/shortCutButton2" />
 
     <Button
-        android:text="S4"
+        android:text="↑"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/shortCutButton4"
