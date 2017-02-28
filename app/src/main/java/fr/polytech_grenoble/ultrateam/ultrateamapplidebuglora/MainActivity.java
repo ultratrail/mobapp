@@ -15,7 +15,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -27,10 +30,18 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import java.lang.ref.WeakReference;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
+
+
+    /**********************************
+     Attributs section
+     *********************************/
+
+    // USB
 
     /*
      * Notifications from UsbService will be received here.
@@ -58,77 +69,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    /*---------- Listener class to get coordinates ------------- */
-    private class MyLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location loc) {
-
-            TextView posGPS = (TextView) findViewById(R.id.positionGPS);
-            posGPS.setText("");
-
-            //pb.setVisibility(View.INVISIBLE);
-            Toast.makeText(
-                    getBaseContext(),
-                    "Location changed: Lat: " + loc.getLatitude() + " Lng: "
-                            + loc.getLongitude(), Toast.LENGTH_SHORT).show();
-            String longitude = "Longitude: " + loc.getLongitude();
-            String latitude = "Latitude: " + loc.getLatitude();
-
-        /*------- To get city name from coordinates -------- */
-           /* String cityName = null;
-            Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-            List<Address> addresses;
-            try {
-                addresses = gcd.getFromLocation(loc.getLatitude(),
-                        loc.getLongitude(), 1);
-                if (addresses.size() > 0) {
-                    System.out.println(addresses.get(0).getLocality());
-                    cityName = addresses.get(0).getLocality();
-                }
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            String s = longitude + "\n" + latitude + "\n\nMy Current City is: "
-                    + cityName;
-            editLocation.setText(s);*/
-
-            String s = longitude + "\n" + latitude + "\n\n";
-            posGPS.setText(s);
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    }
-
-    private TabHost tabHost;
-
-    private UsbService usbService;
-    private TextView display;
-    private EditText commandInput;
-    private Button shortcutButton1;
-    private Button shortcutButton2;
-    private Button shortcutButton3;
-    private Button shortcutButton4;
-
-    private String lastCommand;
-
     private MyHandler mHandler;
 
-    private LocationManager locationManager;
+    private UsbService usbService;
 
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
@@ -142,6 +85,34 @@ public class MainActivity extends AppCompatActivity {
             usbService = null;
         }
     };
+
+    //Graphics
+
+    private TabHost tabHost;
+    private TextView display;
+    private EditText commandInput;
+    private Button shortcutButton1;
+    private Button shortcutButton2;
+    private Button shortcutButton3;
+    private Button shortcutButton4;
+
+    private TextView posGPS;
+    //Others
+
+    private String lastCommand;
+
+    // GPS
+
+    private LocationManager locationManager;
+
+    // Map
+
+
+
+
+    /**********************************
+     Fonctions section
+     *********************************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,16 +135,21 @@ public class MainActivity extends AppCompatActivity {
         spec.setIndicator("GPS");
         host.addTab(spec);
 
+        //Tab 3
+        spec = host.newTabSpec("Maps");
+        spec.setContent(R.id.maps);
+        spec.setIndicator("Maps");
+        host.addTab(spec);
 
-        lastCommand = "";
 
-        mHandler = new MyHandler(this);
 
-        display = (TextView) findViewById(R.id.commandView);
 
         commandInput = (EditText) findViewById(R.id.commandInput);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
 
+        display = (TextView) findViewById(R.id.commandView);
+
+        posGPS = (TextView) findViewById(R.id.positionGPS);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,10 +205,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        // Others
+
+        lastCommand = "";
+
+        // USB Section
+
+        mHandler = new MyHandler(this);
+
         // GPS Section
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new MyLocationListener();
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -241,9 +226,12 @@ public class MainActivity extends AppCompatActivity {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(getBaseContext(), "GPS problem", Toast.LENGTH_SHORT).show();
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+
+
 
     }
 
@@ -256,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         setFilters();  // Start listening notifications from UsbService
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
+
+
     }
 
     @Override
@@ -263,7 +253,10 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         unregisterReceiver(mUsbReceiver);
         unbindService(usbConnection);
+
     }
+
+    // USB Fonctions
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
         if (!UsbService.SERVICE_CONNECTED) {
@@ -291,6 +284,9 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(mUsbReceiver, filter);
     }
 
+
+
+
     /*
      * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
      */
@@ -311,4 +307,66 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    //GPS Section
+
+    private class MyLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location loc) {
+
+
+
+            TextView posGPS = (TextView) findViewById(R.id.positionGPS);
+            posGPS.setText("");
+
+            //pb.setVisibility(View.INVISIBLE);
+            Toast.makeText(
+                    getBaseContext(),
+                    "Location changed: Lat: " + loc.getLatitude() + " Lng: "
+                            + loc.getLongitude(), Toast.LENGTH_SHORT).show();
+            String longitude = "Longitude: " + loc.getLongitude();
+            String latitude = "Latitude: " + loc.getLatitude();
+
+        /*------- To get city name from coordinates -------- */
+           /* String cityName = null;
+            Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
+            List<Address> addresses;
+            try {
+                addresses = gcd.getFromLocation(loc.getLatitude(),
+                        loc.getLongitude(), 1);
+                if (addresses.size() > 0) {
+                    System.out.println(addresses.get(0).getLocality());
+                    cityName = addresses.get(0).getLocality();
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            String s = longitude + "\n" + latitude + "\n\nMy Current City is: "
+                    + cityName;
+            editLocation.setText(s);*/
+
+            String s = longitude + "\n" + latitude + "\n\n";
+            posGPS.setText(s);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+
+
+    }
+
 }

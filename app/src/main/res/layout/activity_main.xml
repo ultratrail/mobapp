@@ -160,6 +160,21 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/maps"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <com.google.android.gms.maps.MapView android:id="@+id/mapview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" />
+
+
+
+                </LinearLayout>
+
 
             </FrameLayout>
         </LinearLayout>
