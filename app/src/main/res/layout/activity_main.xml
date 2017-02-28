@@ -1,108 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context="fr.polytech_grenoble.ultrateam.ultrateamapplidebuglora.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="fr.polytech_grenoble.ultrateam.ultrateamapplidebuglora.MainActivity">
 
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/serial_port"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <TabHost
+        android:id="@+id/tabHost"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:background="#FFFFFF"
-        android:scrollbars="vertical"
-        android:fillViewport="true">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
 
 
-        <TextView
-            android:id="@+id/commandView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="0dp"
-            android:background="#FFFFFF"
-            android:maxLines="7"
-            android:minHeight="120dp"
-            android:scrollIndicators="left"
-            android:scrollbars="vertical" />
+            android:orientation="vertical">
 
-    </ScrollView>
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></TabWidget>
 
-    <Button
-        android:id="@+id/buttonSend"
-        style="?borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/commandInput"
-        android:layout_alignTop="@+id/commandInput" />
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/commandInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:layout_below="@+id/shortCutButton1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/buttonSend"
-        android:layout_toStartOf="@+id/buttonSend"
-        android:inputType="">
 
-        <requestFocus/>
-    </EditText>
+                <RelativeLayout
+                    android:id="@+id/term"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin">
 
-    <Button
-        android:text="GCI"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortCutButton1"
-        android:layout_below="@+id/scroll_view"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp" />
 
-    <Button
-        android:text="TX"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/shortCutButton1"
-        android:layout_toRightOf="@+id/shortCutButton1"
-        android:layout_toEndOf="@+id/shortCutButton1"
-        android:id="@+id/shortCutButton2" />
+                    <TextView
+                        android:id="@+id/textViewTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/serial_port"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:text="RX"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortCutButton3"
-        android:layout_alignBaseline="@+id/shortCutButton2"
-        android:layout_alignBottom="@+id/shortCutButton2"
-        android:layout_toRightOf="@+id/shortCutButton2"
-        android:layout_toEndOf="@+id/shortCutButton2" />
+                    <ScrollView
+                        android:id="@+id/scroll_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="40dp"
+                        android:background="#FFFFFF"
+                        android:fillViewport="true"
+                        android:scrollbars="vertical">
 
-    <Button
-        android:text="↑"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortCutButton4"
-        android:layout_alignTop="@+id/shortCutButton3"
-        android:layout_toRightOf="@+id/shortCutButton3"
-        android:layout_toEndOf="@+id/shortCutButton3" />
+
+                        <TextView
+                            android:id="@+id/commandView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="0dp"
+                            android:background="#FFFFFF"
+                            android:maxLines="7"
+                            android:minHeight="120dp"
+                            android:scrollIndicators="left"
+                            android:scrollbars="vertical" />
+
+                    </ScrollView>
+
+                    <Button
+                        android:id="@+id/buttonSend"
+                        style="?borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/commandInput"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignTop="@+id/commandInput"
+                        android:text="send" />
+
+                    <EditText
+                        android:id="@+id/commandInput"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/shortCutButton1"
+                        android:layout_marginTop="10dp"
+                        android:layout_toLeftOf="@+id/buttonSend"
+                        android:layout_toStartOf="@+id/buttonSend"
+                        android:ems="10"
+                        android:inputType="">
+
+                        <requestFocus />
+                    </EditText>
+
+                    <Button
+                        android:id="@+id/shortCutButton1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/scroll_view"
+                        android:layout_marginTop="5dp"
+                        android:text="GCI" />
+
+                    <Button
+                        android:id="@+id/shortCutButton2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/shortCutButton1"
+                        android:layout_toEndOf="@+id/shortCutButton1"
+                        android:layout_toRightOf="@+id/shortCutButton1"
+                        android:text="TX" />
+
+                    <Button
+                        android:id="@+id/shortCutButton3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/shortCutButton2"
+                        android:layout_alignBottom="@+id/shortCutButton2"
+                        android:layout_toEndOf="@+id/shortCutButton2"
+                        android:layout_toRightOf="@+id/shortCutButton2"
+                        android:text="RX" />
+
+                    <Button
+                        android:id="@+id/shortCutButton4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/shortCutButton3"
+                        android:layout_toEndOf="@+id/shortCutButton3"
+                        android:layout_toRightOf="@+id/shortCutButton3"
+                        android:text="↑" />
+                </RelativeLayout>
+                
+                <LinearLayout
+                    android:id="@+id/gps"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/positionGPS"
+                        android:text="0.0" />
+
+
+                </LinearLayout>
+
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
 </RelativeLayout>

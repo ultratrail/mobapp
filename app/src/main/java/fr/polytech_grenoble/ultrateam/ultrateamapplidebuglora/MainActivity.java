@@ -1,15 +1,21 @@
 package fr.polytech_grenoble.ultrateam.ultrateamapplidebuglora;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -17,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +57,65 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    /*---------- Listener class to get coordinates ------------- */
+    private class MyLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location loc) {
+
+            TextView posGPS = (TextView) findViewById(R.id.positionGPS);
+            posGPS.setText("");
+
+            //pb.setVisibility(View.INVISIBLE);
+            Toast.makeText(
+                    getBaseContext(),
+                    "Location changed: Lat: " + loc.getLatitude() + " Lng: "
+                            + loc.getLongitude(), Toast.LENGTH_SHORT).show();
+            String longitude = "Longitude: " + loc.getLongitude();
+            String latitude = "Latitude: " + loc.getLatitude();
+
+        /*------- To get city name from coordinates -------- */
+           /* String cityName = null;
+            Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
+            List<Address> addresses;
+            try {
+                addresses = gcd.getFromLocation(loc.getLatitude(),
+                        loc.getLongitude(), 1);
+                if (addresses.size() > 0) {
+                    System.out.println(addresses.get(0).getLocality());
+                    cityName = addresses.get(0).getLocality();
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            String s = longitude + "\n" + latitude + "\n\nMy Current City is: "
+                    + cityName;
+            editLocation.setText(s);*/
+
+            String s = longitude + "\n" + latitude + "\n\n";
+            posGPS.setText(s);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    }
+
+    private TabHost tabHost;
+
     private UsbService usbService;
     private TextView display;
     private EditText commandInput;
@@ -61,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
     private String lastCommand;
 
     private MyHandler mHandler;
+
+    private LocationManager locationManager;
+
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
@@ -79,7 +148,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lastCommand="";
+        TabHost host = (TabHost) findViewById(R.id.tabHost);
+        host.setup();
+
+
+        //Tab 1
+        TabHost.TabSpec spec = host.newTabSpec("Term");
+        spec.setContent(R.id.term);
+        spec.setIndicator("Term");
+        host.addTab(spec);
+
+        //Tab 2
+        spec = host.newTabSpec("GPS");
+        spec.setContent(R.id.gps);
+        spec.setIndicator("GPS");
+        host.addTab(spec);
+
+
+        lastCommand = "";
 
         mHandler = new MyHandler(this);
 
@@ -89,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
         Button sendButton = (Button) findViewById(R.id.buttonSend);
 
 
-
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     String data = commandInput.getText().toString() + "\r\n";
                     if (usbService != null) { // if UsbService was correctly binded, Send data
                         display.append(data);
-                        lastCommand=data;
+                        lastCommand = data;
                         usbService.write(data.getBytes());
                         commandInput.setText("");
 
@@ -111,40 +196,60 @@ public class MainActivity extends AppCompatActivity {
         display.setMovementMethod(new ScrollingMovementMethod());
 
         shortcutButton1 = (Button) findViewById(R.id.shortCutButton1);
-        shortcutButton1.setOnClickListener(new View.OnClickListener()  {
+        shortcutButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 commandInput.setText("sys get ver");
             }
-        } );
+        });
 
         shortcutButton2 = (Button) findViewById(R.id.shortCutButton2);
-        shortcutButton2.setOnClickListener(new View.OnClickListener()  {
+        shortcutButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 commandInput.setText("radio tx");
             }
-        } );
+        });
 
         shortcutButton3 = (Button) findViewById(R.id.shortCutButton3);
-        shortcutButton3.setOnClickListener(new View.OnClickListener()  {
+        shortcutButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 commandInput.setText("radio rx 0");
             }
-        } );
+        });
 
         shortcutButton4 = (Button) findViewById(R.id.shortCutButton4);
-        shortcutButton4.setOnClickListener(new View.OnClickListener()  {
+        shortcutButton4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("LC", lastCommand);
                 commandInput.setText(lastCommand);
             }
-        } );
+        });
 
+
+        // GPS Section
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new MyLocationListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
 
     }
+
+
+
+
 
     @Override
     public void onResume() {
