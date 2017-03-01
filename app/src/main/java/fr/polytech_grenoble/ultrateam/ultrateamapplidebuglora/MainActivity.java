@@ -32,6 +32,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,7 +45,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, OnMapReadyCallback {
 
 
     /**********************************
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //Tab 3
         spec = host.newTabSpec("Maps");
-        spec.setContent(R.id.maps);
+        spec.setContent(R.id.map);
         spec.setIndicator("Maps");
         host.addTab(spec);
 
@@ -321,10 +323,13 @@ public class MainActivity extends AppCompatActivity implements
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = findViewById(R.id.map)
+            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMapAsync(this);
 
-                    ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview))
-                    .getMap();*/
+
+
+
+
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
@@ -392,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
         } else {
             handleNewLocation(location);
         }
@@ -432,6 +437,12 @@ public class MainActivity extends AppCompatActivity implements
             Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
         }
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        setUpMap();
     }
 
 
