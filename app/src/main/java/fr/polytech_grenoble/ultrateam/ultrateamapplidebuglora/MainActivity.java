@@ -32,6 +32,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -42,7 +43,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.lang.ref.WeakReference;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends MapFragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, OnMapReadyCallback {
@@ -323,8 +324,8 @@ public class MainActivity extends AppCompatActivity implements
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMapAsync(this);
+            MapView mapView = (MapView) findViewById(R.id.mapview);
+            mapView.getMapAsync(this);
 
 
 
